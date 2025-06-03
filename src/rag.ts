@@ -29,7 +29,7 @@ const prompt = ChatPromptTemplate.fromMessages([
         Start Context: {context}
         End Context.
      `],
-    new MessagesPlaceholder("chat_history"),
+    // new MessagesPlaceholder("chat_history"),
     ["human", "{question}"]
 ]);
 
@@ -54,14 +54,14 @@ const generationChain = RunnableSequence.from([
     {
         question: (input) => input.question,
         context: retrievalChain,
-        chat_history: (input) => input.chat_history
+        //chat_history: (input) => input.chat_history
     },
     prompt,
     llm,
     outputParser
 ]);
 
-/*
+
 const qcSystemPrompt = `Given a chat history and the latest user question which might reference context in the chat history,
 formulate a standalone question which can be understood without the chat history. Do NOT answer question, just reformulate it
 if needed and otherwise return it as is.`;
@@ -77,18 +77,27 @@ const qcChain = RunnableSequence.from([
     llm,
     outputParser
 ]);
-*/
+
 const chatHistory: BaseMessage[] = [];
 
 const chatHandler: ChatHandler = async (question: string) => {
 
+    let contextualizedQuestion = null;
+
+    if (chatHistory.length > 0) {
+        contextualizedQuestion = await qcChain.invoke({
+            question,
+            chat_history: chatHistory,
+        })
+    }
+
     return {
         answer: generationChain.stream({
-            question: question,
-            chat_history: chatHistory,
+            question: contextualizedQuestion || question,
+            //chat_history: chatHistory,
         }),
         answerCallBack: async (answerText: string) => {
-            chatHistory.push(new HumanMessage(question));
+            chatHistory.push(new HumanMessage(contextualizedQuestion || question));
             chatHistory.push(new AIMessage(answerText));
         }
     }

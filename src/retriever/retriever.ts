@@ -1,12 +1,12 @@
 import {VectorStoreRetriever} from "@langchain/core/vectorstores";
-import {OpenAIEmbeddings} from "@langchain/openai";
+import {OllamaEmbeddings} from "@langchain/ollama";
 import {Pinecone} from "@pinecone-database/pinecone";
 import {PineconeStore} from "@langchain/pinecone";
 
 export async function createRetriever(): Promise<VectorStoreRetriever> {
 
-    const embeddingLLM = new OpenAIEmbeddings({
-        model: 'text-embedding-3-small'
+    const embeddingLLM = new OllamaEmbeddings({
+        model: process.env['EMBEDDINGS_LLM_MODEL'] || 'nomic-embed-text'
     });
 
     const pinecone = new Pinecone();

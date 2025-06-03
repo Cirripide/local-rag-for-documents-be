@@ -8,7 +8,7 @@ import {TextLoader} from "langchain/document_loaders/fs/text";
 import {PDFLoader} from "@langchain/community/document_loaders/fs/pdf";
 import {DocumentLoader} from "@langchain/core/document_loaders/base";
 import {RecursiveCharacterTextSplitter} from "langchain/text_splitter";
-import {OpenAIEmbeddings} from "@langchain/openai";
+import {OllamaEmbeddings} from "@langchain/ollama";
 import {Pinecone} from "@pinecone-database/pinecone";
 import {PineconeStore} from "@langchain/pinecone";
 
@@ -38,7 +38,11 @@ export default class Indexer {
             progressBar.stop();
         }
 
-        await this.recursiveDocFind({directory: process.env['FOLDER_PATH'] as string, foundDocumentsPath: docs, progressBar});
+        await this.recursiveDocFind({
+            directory: process.env['FOLDER_PATH'] as string,
+            foundDocumentsPath: docs,
+            progressBar
+        });
 
         progressBar.stop();
         return docs;
@@ -79,8 +83,8 @@ export default class Indexer {
         console.log('splitting documents...');
 
         const splitter = new RecursiveCharacterTextSplitter({
-            chunkSize: 1000,
-            chunkOverlap: 200
+            chunkSize: 500,
+            chunkOverlap: 100
         });
 
         const documentChunks = await splitter.splitDocuments(rawDocuments);
@@ -92,8 +96,8 @@ export default class Indexer {
 
     public async vectorizeChunks(chunks: Document[]) {
 
-        const embeddingLLM = new OpenAIEmbeddings({
-            model: 'text-embedding-3-small'
+        const embeddingLLM = new OllamaEmbeddings({
+            model: process.env['EMBEDDINGS_LLM_MODEL'] || 'nomic-embed-text'
         });
 
         const pinecone = new Pinecone();
@@ -126,7 +130,11 @@ export default class Indexer {
         await this.vectorizeChunks(chunks);
     }
 
-    private async recursiveDocFind(config: { directory: string, foundDocumentsPath: string[], progressBar: SingleBar }): Promise<void> {
+    private async recursiveDocFind(config: {
+        directory: string,
+        foundDocumentsPath: string[],
+        progressBar: SingleBar
+    }): Promise<void> {
         const elements = await fs.readdir(config.directory);
 
         for (const element of elements) {
