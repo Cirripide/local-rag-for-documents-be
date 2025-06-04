@@ -29,7 +29,6 @@ const prompt = ChatPromptTemplate.fromMessages([
         Start Context: {context}
         End Context.
      `],
-    // new MessagesPlaceholder("chat_history"),
     ["human", "{question}"]
 ]);
 
@@ -54,7 +53,6 @@ const generationChain = RunnableSequence.from([
     {
         question: (input) => input.question,
         context: retrievalChain,
-        //chat_history: (input) => input.chat_history
     },
     prompt,
     llm,
@@ -94,7 +92,6 @@ const chatHandler: ChatHandler = async (question: string) => {
     return {
         answer: generationChain.stream({
             question: contextualizedQuestion || question,
-            //chat_history: chatHistory,
         }),
         answerCallBack: async (answerText: string) => {
             chatHistory.push(new HumanMessage(contextualizedQuestion || question));
