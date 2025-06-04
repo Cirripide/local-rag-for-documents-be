@@ -12,29 +12,11 @@ At the moment the supported documents are:
 
 Copy the project locally, then create the .env file from the example one.
 
-If you don't have the Chroma Docker image, proceed to pull it
+The chosen document folder inside the `.env` file will be linked inside the container as read-only volume. So you're assured that your file won't change
 
-```
-npm run dev:pull-chroma
-```
-
-Launch Chroma via Docker
-
-```
-npm run dev:run-chroma
-```
-
-
-From terminal index the contents of the folder indicated in the .env file
-
-```
-npm run dev:indexing
-```
-
-Once the indexing process is finished it starts communicating
-
-```
-npm run dev
+To execute the project locally execute:
+```sh
+docker compose watch
 ```
 
 ## Contributing
