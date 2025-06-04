@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {Chroma} from "@langchain/community/vectorstores/chroma";
 import {Embeddings} from "@langchain/core/embeddings";
-import {ChromaClient, Collection, AdminClient} from "chromadb";
+import {ChromaClient, Collection} from "chromadb";
 
 dotenv.config();
 
