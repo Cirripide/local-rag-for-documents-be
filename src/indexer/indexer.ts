@@ -9,8 +9,7 @@ import {PDFLoader} from "@langchain/community/document_loaders/fs/pdf";
 import {DocumentLoader} from "@langchain/core/document_loaders/base";
 import {RecursiveCharacterTextSplitter} from "langchain/text_splitter";
 import {OllamaEmbeddings} from "@langchain/ollama";
-import {Pinecone} from "@pinecone-database/pinecone";
-import {PineconeStore} from "@langchain/pinecone";
+import ChromaService from "../services/chroma/chroma-service";
 
 
 export default class Indexer {
@@ -100,9 +99,15 @@ export default class Indexer {
             model: process.env['EMBEDDINGS_LLM_MODEL'] || 'nomic-embed-text'
         });
 
-        const pinecone = new Pinecone();
+        const chromaService = new ChromaService();
 
-        const pineconeIndexDataOperation = pinecone.index(process.env['PINECONE_INDEX'] as string);
+        const vectorStore = chromaService.getVectorStore(embeddingLLM);
+
+        try {
+            await chromaService.deleteCollection();
+        } catch(e) {}
+
+        await chromaService.createCollection();
 
         console.log('Starting Vectorization...');
         const progressBar = new SingleBar({});
@@ -111,13 +116,23 @@ export default class Indexer {
         for (let i = 0; i < chunks.length; i = i + 100) {
             const batch = chunks.slice(i, i + 100);
 
-            await PineconeStore.fromDocuments(batch, embeddingLLM, {pineconeIndex: pineconeIndexDataOperation as any});
+            const cleanDocs = batch.map(doc => {
+                const { pdf, ...restMetadata } = doc.metadata;
+                return {
+                    ...doc,
+                    metadata: restMetadata,
+                };
+            });
+
+            const batchIds = batch.map((chunk, index) => (i + index).toString());
+
+            await vectorStore.addDocuments(cleanDocs, { ids: batchIds });
 
             progressBar.increment(batch.length);
         }
 
         progressBar.stop();
-        console.log('Vectorization completed and chunked stored in pinecone.');
+        console.log('Vectorization completed and chunked stored in chroma.');
     }
 
     public async index() {

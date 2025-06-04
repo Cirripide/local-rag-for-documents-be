@@ -1,7 +1,9 @@
 import {VectorStoreRetriever} from "@langchain/core/vectorstores";
 import {OllamaEmbeddings} from "@langchain/ollama";
-import {Pinecone} from "@pinecone-database/pinecone";
-import {PineconeStore} from "@langchain/pinecone";
+import ChromaService from "../services/chroma/chroma-service";
+
+import dotenv from "dotenv";
+dotenv.config();
 
 export async function createRetriever(): Promise<VectorStoreRetriever> {
 
@@ -9,13 +11,9 @@ export async function createRetriever(): Promise<VectorStoreRetriever> {
         model: process.env['EMBEDDINGS_LLM_MODEL'] || 'nomic-embed-text'
     });
 
-    const pinecone = new Pinecone();
+    const chromaService = new ChromaService();
 
-    const pineconeIndexDataOperation = pinecone.index(process.env['PINECONE_INDEX'] as string);
-
-    const vectorStore = await PineconeStore.fromExistingIndex(embeddingLLM, {
-        pineconeIndex: pineconeIndexDataOperation as any,
-    });
+    const vectorStore = chromaService.getVectorStore(embeddingLLM);
 
     return vectorStore.asRetriever();
 }
