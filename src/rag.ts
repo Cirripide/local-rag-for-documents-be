@@ -1,7 +1,7 @@
 import {ChatPromptTemplate, MessagesPlaceholder} from "@langchain/core/prompts";
 import { Ollama } from "@langchain/ollama";
 import {StringOutputParser} from "@langchain/core/output_parsers";
-import {createRetriever} from "./retriever/retriever";
+import {createRetriever} from "./services/retriever/retriever";
 import {RunnableSequence} from "@langchain/core/runnables";
 import {formatDocumentsAsString} from "langchain/util/document";
 import {chat, ChatHandler} from "./utils/chat";
@@ -15,7 +15,7 @@ const prompt = ChatPromptTemplate.fromMessages([
         "system",
         `You are an assistant for question-answering tasks. Your name is ${process.env['ASSISTANT_NAME'] || 'Assistant'}. 
         Here are the rules for answering the question:
-        1) Answer only in ${process.env['LANGUAGE'] || 'english'} when it is possible unless otherwise specified by the user.
+        1) Answer only in ${process.env['LANGUAGE'] || 'english'} when it is possible unless otherwise specified by the user. More technical terms can remain in the original language.
         2) The answer must be relevant to the question asked and as complete as possible.
         3) Be very careful, the question you have to answer is not in the context or even in the chat history, it is only the last question asked by the human.
         4) If you don't know the answer, just say that you don't know.

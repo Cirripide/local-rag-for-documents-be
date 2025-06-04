@@ -1,6 +1,6 @@
 import {VectorStoreRetriever} from "@langchain/core/vectorstores";
 import {OllamaEmbeddings} from "@langchain/ollama";
-import ChromaService from "../services/chroma/chroma-service";
+import ChromaService from "../chroma/chroma-service";
 
 import dotenv from "dotenv";
 dotenv.config();

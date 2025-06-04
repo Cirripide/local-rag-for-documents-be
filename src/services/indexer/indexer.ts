@@ -9,7 +9,7 @@ import {PDFLoader} from "@langchain/community/document_loaders/fs/pdf";
 import {DocumentLoader} from "@langchain/core/document_loaders/base";
 import {RecursiveCharacterTextSplitter} from "langchain/text_splitter";
 import {OllamaEmbeddings} from "@langchain/ollama";
-import ChromaService from "../services/chroma/chroma-service";
+import ChromaService from "../chroma/chroma-service";
 
 
 export default class Indexer {
