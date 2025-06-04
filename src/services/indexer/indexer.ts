@@ -34,13 +34,13 @@ export default class Indexer {
 
         progressBar.start(1000, 0);
 
-        if (!process.env['FOLDER_PATH']) {
-            console.error("No folder path found");
-            progressBar.stop();
-        }
+        // if (!process.env['FOLDER_PATH']) {
+        //    console.error("No folder path found");
+        //    progressBar.stop();
+        // }
 
         await this.recursiveDocFind({
-            directory: process.env['FOLDER_PATH'] as string,
+            directory: `${process.cwd()}/documents`,
             foundDocumentsPath: docs,
             progressBar
         });
