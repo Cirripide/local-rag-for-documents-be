@@ -7,26 +7,23 @@ At the moment the supported documents are:
 - .txt
 - .pdf
 
-For now the project only works with Pinecone database and open Ai API.
-
 
 ## Usage
 
 Copy the project locally, then create the .env file from the example one.
 
+If you don't have the Chroma Docker image, proceed to pull it
+
 ```
-LANGSMITH_TRACING=true
-LANGSMITH_ENDPOINT=""
-LANGSMITH_API_KEY=""
-LANGSMITH_PROJECT=""
-
-OPENAI_API_KEY=""
-
-PINECONE_API_KEY=""
-
-FOLDER_PATH=<Your folder path>
-PINECONE_INDEX=<Your Pinecone index name>
+npm run dev:pull-chroma
 ```
+
+Launch Chroma via Docker
+
+```
+npm run dev:run-chroma
+```
+
 
 From terminal index the contents of the folder indicated in the .env file
 
@@ -39,10 +36,6 @@ Once the indexing process is finished it starts communicating
 ```
 npm run dev
 ```
-
-For now it is necessary to empty the Pinecone index and re-index the files when some changes are made to the documents.
-
-In order not to consume excessive tokens, since the history is used as context, for each context change in the communication, start a new conversation (ctrl + c -> npm run dev)
 
 ## Contributing
 
