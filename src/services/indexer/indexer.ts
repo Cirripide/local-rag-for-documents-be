@@ -9,15 +9,17 @@ import {PDFLoader} from "@langchain/community/document_loaders/fs/pdf";
 import {DocumentLoader} from "@langchain/core/document_loaders/base";
 import {RecursiveCharacterTextSplitter} from "langchain/text_splitter";
 import {OllamaEmbeddings} from "@langchain/ollama";
-import ChromaService from "../chroma/chroma-service";
+import {VectorDbServiceAdapter} from "./indexer.models";
 
 
 export default class Indexer {
 
     filesExtensions: string[] = ['.docx', '.txt', '.pdf'];
+    vectorDbService: VectorDbServiceAdapter;
 
-    constructor() {
+    constructor(vectorDbService: VectorDbServiceAdapter) {
         dotenv.config();
+        this.vectorDbService = vectorDbService;
     }
 
     public async crawlDocsPaths(): Promise<string[]> {
@@ -99,14 +101,11 @@ export default class Indexer {
             model: process.env['EMBEDDINGS_LLM_MODEL'] || 'nomic-embed-text'
         });
 
-        const chromaService = new ChromaService();
+        if (await this.vectorDbService.checkCollectionExists()) {
+            await this.vectorDbService.deleteCollection();
+        }
 
-
-        try {
-            await chromaService.deleteCollection();
-        } catch(e) {}
-
-        await chromaService.createCollection();
+        await this.vectorDbService.createCollection();
 
         console.log('Starting Vectorization...');
         const progressBar = new SingleBar({});
@@ -115,13 +114,13 @@ export default class Indexer {
         for (let i = 0; i < chunks.length; i = i + 100) {
             const batch = chunks.slice(i, i + 100);
 
-            await chromaService.vectorizeChunks({embeddingLLM, docs: batch, baseIndexId: i});
+            await this.vectorDbService.vectorizeChunks({embeddingLLM, docs: batch, baseIndexId: i});
 
             progressBar.increment(batch.length);
         }
 
         progressBar.stop();
-        console.log('Vectorization completed and chunked stored in chroma.');
+        console.log('Vectorization completed and chunked stored in the vector db.');
     }
 
     public async index() {

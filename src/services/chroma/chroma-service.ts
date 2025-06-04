@@ -1,12 +1,13 @@
 import dotenv from "dotenv";
 import {Chroma} from "@langchain/community/vectorstores/chroma";
 import {Embeddings} from "@langchain/core/embeddings";
-import {ChromaClient, Collection} from "chromadb";
+import {ChromaClient} from "chromadb";
 import {Document} from "@langchain/core/documents";
+import {VectorDbServiceAdapter} from "../indexer/indexer.models";
 
 dotenv.config();
 
-export default class ChromaService {
+export default class ChromaService implements VectorDbServiceAdapter {
     private readonly collectionName: string;
     private readonly dbUrl: string;
     private readonly client: ChromaClient;
@@ -18,36 +19,46 @@ export default class ChromaService {
 
     }
 
-    async createCollection(): Promise<Collection> {
-        const collection = await this.client.createCollection({
-            name: this.collectionName,
+    async createCollection(): Promise<boolean> {
+        try {
+            await this.client.createCollection({
+                name: this.collectionName,
 
-        });
+            });
 
-        return collection;
+            return true;
+
+        } catch (e) {
+            return false;
+        }
     }
 
-    async deleteCollection(): Promise<void> {
-        await this.client.deleteCollection({name: this.collectionName});
+    async deleteCollection(): Promise<boolean> {
+        try {
+            await this.client.deleteCollection({name: this.collectionName});
+
+            return true;
+
+        } catch (e) {
+            return false;
+        }
+
     }
 
-    async getCollection(): Promise<Collection> {
-        const collection = await this.client.getCollection({name: this.collectionName});
-        return collection;
+    async checkCollectionExists(): Promise<boolean> {
+        try {
+            await this.client.getCollection({name: this.collectionName});
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
-    getVectorStore(embeddingLLM: Embeddings): Chroma {
-        return new Chroma(embeddingLLM, {
-            collectionName: this.collectionName,
-            url: this.dbUrl
-        });
-    }
-
-    async vectorizeChunks(config: {embeddingLLM: Embeddings, docs: Document[], baseIndexId?: number}) {
+    async vectorizeChunks(config: { embeddingLLM: Embeddings, docs: Document[], baseIndexId?: number }) {
         const vectorStore = this.getVectorStore(config.embeddingLLM);
 
         const cleanDocs = config.docs.map(doc => {
-            const { pdf, ...restMetadata } = doc.metadata;
+            const {pdf, ...restMetadata} = doc.metadata;
             return {
                 ...doc,
                 metadata: restMetadata,
@@ -57,8 +68,14 @@ export default class ChromaService {
         const baseIndex = config.baseIndexId || 0;
         const batchIds = cleanDocs.map((chunk, index) => (baseIndex + index).toString());
 
-        await vectorStore.addDocuments(cleanDocs, { ids: batchIds });
+        await vectorStore.addDocuments(cleanDocs, {ids: batchIds});
     }
 
+    private getVectorStore(embeddingLLM: Embeddings): Chroma {
+        return new Chroma(embeddingLLM, {
+            collectionName: this.collectionName,
+            url: this.dbUrl
+        });
+    }
 
 }
