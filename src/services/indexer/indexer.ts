@@ -101,7 +101,6 @@ export default class Indexer {
 
         const chromaService = new ChromaService();
 
-        const vectorStore = chromaService.getVectorStore(embeddingLLM);
 
         try {
             await chromaService.deleteCollection();
@@ -116,17 +115,7 @@ export default class Indexer {
         for (let i = 0; i < chunks.length; i = i + 100) {
             const batch = chunks.slice(i, i + 100);
 
-            const cleanDocs = batch.map(doc => {
-                const { pdf, ...restMetadata } = doc.metadata;
-                return {
-                    ...doc,
-                    metadata: restMetadata,
-                };
-            });
-
-            const batchIds = batch.map((chunk, index) => (i + index).toString());
-
-            await vectorStore.addDocuments(cleanDocs, { ids: batchIds });
+            await chromaService.vectorizeChunks({embeddingLLM, docs: batch, baseIndexId: i});
 
             progressBar.increment(batch.length);
         }
