@@ -98,7 +98,8 @@ export default class Indexer {
     public async vectorizeChunks(chunks: Document[]) {
 
         const embeddingLLM = new OllamaEmbeddings({
-            model: process.env['EMBEDDINGS_LLM_MODEL'] || 'nomic-embed-text'
+            model: process.env['EMBEDDINGS_LLM_MODEL'] || 'nomic-embed-text',
+            baseUrl: 'host.docker.internal'
         });
 
         if (await this.vectorDbService.checkCollectionExists()) {
