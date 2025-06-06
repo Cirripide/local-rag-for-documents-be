@@ -1,0 +1,53 @@
+services:
+  chromadb:
+    container_name: chromadb
+    restart: always
+    image: chromadb/chroma:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - chromadb_volume:/data
+  rag:
+    container_name: rag
+    restart: always
+    build:
+      context: .
+      dockerfile: rag.Dockerfile
+      target: base
+    volumes:
+      - ${FOLDER_PATH:-./documents}:/app/documents:ro
+    depends_on:
+      - chromadb
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+
+  indexer:
+    container_name: indexer
+    restart: always
+    build:
+      context: .
+      dockerfile: rag.Dockerfile
+      target: indexer
+    volumes:
+      - ${FOLDER_PATH:-./documents}:/app/documents:ro
+    depends_on:
+      - chromadb
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+
+volumes:
+  chromadb_volume:
