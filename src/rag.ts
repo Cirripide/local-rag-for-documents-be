@@ -36,6 +36,7 @@ const llm = new Ollama(
     {
         model: process.env['LLM_MODEL'] || 'llama3',
         temperature: 0.2,
+        baseUrl: 'host.docker.internal'
     }
 );
 
