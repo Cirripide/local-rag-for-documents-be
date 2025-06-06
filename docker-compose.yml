@@ -36,7 +36,7 @@ services:
       dockerfile: rag.Dockerfile
       target: indexer
     volumes:
-      - ${FOLDER_PATH:-./documents:/app/documents:ro}
+      - ${FOLDER_PATH:-./documents}:/app/documents:ro
     depends_on:
       - chromadb
     develop:
