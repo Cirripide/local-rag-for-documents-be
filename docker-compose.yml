@@ -3,13 +3,13 @@ services:
     container_name: chromadb
     restart: always
     image: chromadb/chroma:latest
-    ports:
-      - "8000:8000"
     volumes:
       - chromadb_volume:/data
   rag:
     container_name: rag
     restart: always
+    ports:
+      - "${SERVER_PORT}:${EXPRESS_PORT}"
     build:
       context: .
       dockerfile: rag.Dockerfile
@@ -48,6 +48,16 @@ services:
             - node_modules/
         - action: rebuild
           path: package.json
-
+  db:
+    image: mysql
+    restart: always
+    volumes:
+      - mysql_volume:/var/lib/mysql
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: yes
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE_NAME}"
 volumes:
   chromadb_volume:
+  mysql_volume:
