@@ -1,0 +1,3 @@
+FROM {BASE_MODEL}
+
+# TODO: add more info about the prompt
