@@ -36,15 +36,15 @@ then
 fi
 
 # If EMBEDDINGS_LLM_MODEL or LLM_MODEL aren't set up then stop the script
-if [ -z "${EMBEDDINGS_LLM_MODEL}" ] || [ -z "${LLM_MODEL}" ];
+if [ -z "${EMBEDDINGS_LLM_MODEL}" ] || [ -z "${LLM_MODEL}" ] || [ -z "${LOCAL_LLM_MODEL_NAME}" ];
 then
-  echo "You must set EMBEDDINGS_LLM_MODEL and LLM_MODEL variables inside the .env file"
+  echo "You must set EMBEDDINGS_LLM_MODEL, LLM_MODEL and LOCAL_LLM_MODEL_NAME variables inside the .env file"
   exit 1
 fi
 
 
 # Replace 'FROM model' from Modelfle, create Ollama model
-sed "1 s/BASE_MODEL/${LLM_MODEL}/" Modelfile | ollama create local_rag_for_documents
+sed "1 s/BASE_MODEL/${LLM_MODEL}/" Modelfile | ollama create "${LOCAL_LLM_MODEL_NAME}"
 
 # Install embeddings llm model
 ollama pull "${EMBEDDINGS_LLM_MODEL}"
