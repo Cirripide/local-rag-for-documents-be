@@ -16,6 +16,7 @@ services:
       target: base
     volumes:
       - ${FOLDER_PATH:-./documents}:/app/documents:ro
+      - ./prisma:/app/prisma
     depends_on:
       - chromadb
     develop:
@@ -54,9 +55,7 @@ services:
     volumes:
       - mysql_volume:/var/lib/mysql
     environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: yes
-      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
-      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"
       MYSQL_DATABASE: "${MYSQL_DATABASE_NAME}"
 volumes:
   chromadb_volume:

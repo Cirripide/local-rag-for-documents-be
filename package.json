@@ -24,7 +24,10 @@
     "dev": "tsx ./src/index.ts",
     "dev:indexing": "tsx ./src/indexing.ts",
     "dev:pull-chroma": "docker pull chromadb/chroma",
-    "dev:run-chroma": "docker run -p 8000:8000 chromadb/chroma"
+    "dev:run-chroma": "docker run -p 8000:8000 chromadb/chroma",
+    "dev:prisma-migrate": "docker compose exec rag npx prisma migrate dev --name init",
+    "dev:prisma-generate": "docker compose exec rag npx prisma generate",
+    "dev:logs": "docker compose logs -f"
   },
   "devDependencies": {
     "@types/cli-progress": "^3.11.6",
@@ -37,6 +40,7 @@
     "@langchain/community": "^0.3.36",
     "@langchain/core": "^0.3.57",
     "@langchain/ollama": "^0.2.0",
+    "@prisma/client": "^6.9.0",
     "cheerio": "^1.0.0",
     "chromadb": "^2.4.6",
     "chromadb-default-embed": "^2.14.0",
@@ -45,6 +49,7 @@
     "express": "^5.1.0",
     "langchain": "^0.3.2",
     "mammoth": "^1.9.0",
-    "pdf-parse": "^1.1.1"
+    "pdf-parse": "^1.1.1",
+    "prisma": "^6.9.0"
   }
 }

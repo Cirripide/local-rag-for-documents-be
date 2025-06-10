@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import chatsRoutes from "./routes/chats";
+import conversationsRoutes from "./routes/conversations";
 import RagService from "./services/rag";
 
 dotenv.config();
@@ -10,7 +10,7 @@ app.use(express.json());
 
 const ragService = new RagService();
 
-app.use('/chats', chatsRoutes);
+app.use('/conversations', conversationsRoutes);
 
 app.post('/test', async (req, res) => {
 
