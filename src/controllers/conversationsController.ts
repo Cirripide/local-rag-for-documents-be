@@ -1,11 +1,11 @@
 import {Request, Response} from 'express';
 import {ConversationDao} from "../daos/conversationDao";
 
-export const createConversation = (req: Request, res: Response): void => {
+export const createConversation = async (req: Request, res: Response): Promise<void> => {
     try {
         const {title} = req.body;
         const conversationDao = new ConversationDao();
-        const conversation = conversationDao.createConversation({title});
+        const conversation = await conversationDao.createConversation({title});
         res.json(conversation);
     } catch (e) {
         if (e instanceof Error) {
@@ -16,10 +16,10 @@ export const createConversation = (req: Request, res: Response): void => {
     }
 };
 
-export const getAllConversations = (req: Request, res: Response): void => {
+export const getAllConversations = async (req: Request, res: Response): Promise<void> => {
     try {
         const conversationDao = new ConversationDao();
-        const conversations = conversationDao.getAllConversations();
+        const conversations = await conversationDao.getAllConversations();
         res.json(conversations);
     } catch (e) {
         if (e instanceof Error) {

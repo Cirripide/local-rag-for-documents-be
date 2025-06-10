@@ -8,6 +8,7 @@ WORKDIR /app
 RUN npm i -g tsx
 COPY --from=dependencies_installer /app/node_modules ./node_modules
 COPY . ./
+RUN npx prisma generate
 CMD npm run dev
 
 

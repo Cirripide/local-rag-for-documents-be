@@ -11,7 +11,7 @@ enum MessageFrom {
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../prisma/generated"
+  output   = "../src/prisma/generated"
 }
 
 datasource db {
