@@ -11,7 +11,7 @@ export const createConversation = async (req: Request, res: Response): Promise<v
         if (e instanceof Error) {
             res.status(500).send(e.message);
         } else {
-            res.status(500).send("Errore sconosciuto");
+            res.status(500).send("Unknown error");
         }
     }
 };
@@ -28,7 +28,7 @@ export const getAllConversations = async (req: Request, res: Response): Promise<
         if (e instanceof Error) {
             res.status(500).send(e.message);
         } else {
-            res.status(500).send("Errore sconosciuto");
+            res.status(500).send("Unknown error");
         }
     }
 };
