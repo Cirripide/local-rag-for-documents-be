@@ -10,7 +10,7 @@ app.use(express.json());
 
 const ragService = new RagService();
 
-app.use('/v1', v1Router);
+app.use('/api/v1', v1Router);
 
 app.post('/test', async (req, res) => {
 
