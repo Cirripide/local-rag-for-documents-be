@@ -20,10 +20,11 @@ datasource db {
 }
 
 model Conversation {
-  id        Int       @id @default(autoincrement())
-  title     String
-  createdAt DateTime  @default(now())
-  message   Message[]
+  id         Int       @id @default(autoincrement())
+  title      String
+  createdAt  DateTime  @default(now())
+  lastUpdate DateTime  @default(now())
+  message    Message[]
 }
 
 model Message {

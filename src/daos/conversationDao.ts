@@ -13,7 +13,7 @@ export class ConversationDao {
     }
 
 
-    async createConversation(config: Omit<Conversation, "id" | "createdAt">) {
+    async createConversation(config: Omit<Conversation, "id" | "createdAt" | "lastUpdate">) {
         const conversation = await prisma.conversation.create({
             data: {
                 title: config.title
