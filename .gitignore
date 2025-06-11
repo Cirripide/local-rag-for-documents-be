@@ -48,3 +48,5 @@ Thumbs.db
 /chroma-data/
 
 /src/generated/prisma
+/src/prisma/
+/prisma/migrations/
