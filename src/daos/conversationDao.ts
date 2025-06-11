@@ -6,14 +6,14 @@ export class ConversationDao {
     constructor() {
     }
 
-    async getAllConversations() {
+    async getAllConversations(): Promise<Conversation[]> {
         const conversations = await prisma.conversation.findMany();
 
         return conversations;
     }
 
 
-    async createConversation(config: Omit<Conversation, "id" | "createdAt" | "lastUpdate">) {
+    async createConversation(config: Omit<Conversation, "id" | "createdAt" | "lastUpdate">): Promise<Conversation> {
         const conversation = await prisma.conversation.create({
             data: {
                 title: config.title
@@ -22,7 +22,5 @@ export class ConversationDao {
 
         return conversation;
     }
-
-
 
 }
