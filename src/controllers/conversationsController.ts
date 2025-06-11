@@ -20,7 +20,10 @@ export const getAllConversations = async (req: Request, res: Response): Promise<
     try {
         const conversationDao = new ConversationDao();
         const conversations = await conversationDao.getAllConversations();
-        res.json(conversations);
+        const prepareRes = {
+            hits: conversations
+        }
+        res.json(prepareRes);
     } catch (e) {
         if (e instanceof Error) {
             res.status(500).send(e.message);
