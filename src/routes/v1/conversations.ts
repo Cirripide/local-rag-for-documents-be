@@ -63,6 +63,12 @@ router.get('/', getAllConversations);
  *                     application/json:
  *                         schema:
  *                             $ref: '#/components/schemas/Conversation'
+ *             400:
+ *                 description: Bad Request – invalid query parameters
+ *                 content:
+ *                     application/json:
+ *                         schema:
+ *                             $ref: '#/components/schemas/InvalidParams'
  *             500:
  *                 description: Server Error
  */

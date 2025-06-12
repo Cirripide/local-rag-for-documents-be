@@ -48,13 +48,18 @@
  *             type: object
  *             required:
  *                 - name
- *                 - UnrecognizedValue
+ *                 - description
+ *                 - unrecognizedValue
  *                 - allowedValues
  *             properties:
  *                 name:
  *                     type: string
  *                     description: The name of the invalid parameter
  *                     example: order_by
+ *                 description:
+ *                     type: string
+ *                     description: Description of the problem
+ *                     example: Invalid value format
  *                 UnrecognizedValue:
  *                     description: The value provided by the client that was not recognized
  *                     oneOf:
@@ -63,9 +68,7 @@
  *                         - type: boolean
  *                     example: foo
  *                 allowedValues:
- *                     type: array
- *                     items:
- *                         type: string
+ *                     type: any
  *                     description: List of valid values for this parameter
  *                     example:
  *                         - createdAt

@@ -2,8 +2,9 @@ import {Response} from "express";
 
 export type ErrorParam = {
     name: string;
-    UnrecognizedValue: any;
-    allowedValues: readonly any[];
+    description: string;
+    unrecognizedValue: any;
+    allowedValues: any;
 }
 
 export type InvalidParams = {
