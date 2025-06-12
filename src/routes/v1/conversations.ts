@@ -8,6 +8,25 @@ const router = express.Router();
  * /api/v1/conversations:
  *     get:
  *         summary: Get all conversations
+ *         parameters:
+ *             - in: query
+ *               name: order_by
+ *               required: false
+ *               schema:
+ *                   type: string
+ *                   enum:
+ *                       - createdAt
+ *                       - lastUpdate
+ *               description: Field by which to sort the conversations
+ *             - in: query
+ *               name: sort
+ *               required: false
+ *               schema:
+ *                   type: string
+ *                   enum:
+ *                       - asc
+ *                       - desc
+ *               description: Sort direction (ascending or descending)
  *         responses:
  *             200:
  *                 description: OK
@@ -15,6 +34,12 @@ const router = express.Router();
  *                     application/json:
  *                         schema:
  *                             $ref: '#/components/schemas/GetConversationsResponse'
+ *             400:
+ *                 description: Bad Request – invalid query parameters
+ *                 content:
+ *                     application/json:
+ *                         schema:
+ *                             $ref: '#/components/schemas/InvalidParams'
  *             500:
  *                 description: Server Error
  */
