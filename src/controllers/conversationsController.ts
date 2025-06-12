@@ -42,7 +42,6 @@ export const createConversation = async (req: Request, res: Response): Promise<v
 
 export const getAllConversations = async (req: Request, res: Response): Promise<void> => {
     try {
-        const conversationDao = new ConversationDao();
         const errorParams: ErrorParam[] = [];
 
         let orderBy;
@@ -74,6 +73,8 @@ export const getAllConversations = async (req: Request, res: Response): Promise<
             invalidParamsErrorResponse(res, errorParams);
             return;
         }
+
+        const conversationDao = new ConversationDao();
 
         const conversations = await conversationDao.getAllConversations({
             orderBy,
