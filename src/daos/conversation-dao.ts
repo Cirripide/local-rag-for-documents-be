@@ -1,19 +1,20 @@
 import prisma from '../services/prisma/prisma-client';
 import {Conversation} from "../models/conversation.model";
 import {
-    CreateConversationQueryParams,
+    GetConversationsParams,
     CreateConversationQueryParamsOrderBy,
-    CreateConversationQueryParamsSort
-} from "./conversationDao.model";
+    CreateConversationQueryParamsSort,
+    CreateConversationParams
+} from "./conversation-dao.model";
 
 export class ConversationDao {
 
     constructor() {
     }
 
-    async getAllConversations(queryParams?: CreateConversationQueryParams): Promise<Conversation[]> {
-        const orderByKey: CreateConversationQueryParamsOrderBy = queryParams?.orderBy || "lastUpdate";
-        const sort: CreateConversationQueryParamsSort = queryParams?.sort || "desc";
+    async getAllConversations(params?: GetConversationsParams): Promise<Conversation[]> {
+        const orderByKey: CreateConversationQueryParamsOrderBy = params?.orderBy || "lastUpdate";
+        const sort: CreateConversationQueryParamsSort = params?.sort || "desc";
 
         const orderBy = {
             [orderByKey]: sort
@@ -27,10 +28,10 @@ export class ConversationDao {
     }
 
 
-    async createConversation(config: Omit<Conversation, "id" | "createdAt" | "lastUpdate">): Promise<Conversation> {
+    async createConversation(params: CreateConversationParams): Promise<Conversation> {
         const conversation = await prisma.conversation.create({
             data: {
-                title: config.title
+                title: params.title
             }
         });
 

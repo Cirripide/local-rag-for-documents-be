@@ -1,3 +1,5 @@
+import {Conversation} from "../models/conversation.model";
+
 export const CreateConversationQueryParamsOrderByValues = ["createdAt", "lastUpdate"] as const;
 export const CreateConversationQueryParamsSortValues = ["asc", "desc"] as const;
 
@@ -20,7 +22,9 @@ export function isCreateConversationQueryParamsSort(value: any): value is Create
     return (CreateConversationQueryParamsSortValues as readonly string[]).includes(value);
 }
 
-export type CreateConversationQueryParams = {
+export type GetConversationsParams = {
     orderBy?: CreateConversationQueryParamsOrderBy;
     sort?: CreateConversationQueryParamsSort;
 }
+
+export type CreateConversationParams = Omit<Conversation, "id" | "createdAt" | "lastUpdate">;

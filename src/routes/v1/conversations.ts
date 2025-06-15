@@ -1,5 +1,9 @@
 import express from "express";
-import {createConversation, getAllConversations} from "../../controllers/conversationsController";
+import {createConversation, getAllConversations} from "../../controllers/conversations-controller";
+import {
+    validateConversationRequiredFields,
+    validateGetAllConversationsFields
+} from "../../middlewares/validation/validate-conversation";
 
 const router = express.Router();
 
@@ -43,7 +47,7 @@ const router = express.Router();
  *             500:
  *                 description: Server Error
  */
-router.get('/', getAllConversations);
+router.get('/', validateGetAllConversationsFields, getAllConversations);
 
 /**
  * @openapi
@@ -72,6 +76,8 @@ router.get('/', getAllConversations);
  *             500:
  *                 description: Server Error
  */
-router.post('/', createConversation);
+router.post('/', validateConversationRequiredFields, createConversation);
+
+//router.patch('/');
 
 export default router;
