@@ -4,7 +4,7 @@ import {
     GetConversationsParams,
     CreateConversationQueryParamsOrderBy,
     CreateConversationQueryParamsSort,
-    CreateConversationParams
+    CreateConversationParams, UpdateConversationParams
 } from "./conversation-dao.model";
 
 export class ConversationDao {
@@ -34,6 +34,25 @@ export class ConversationDao {
                 title: params.title
             }
         });
+
+        return conversation;
+    }
+
+    async updateConversation(params: UpdateConversationParams): Promise<Conversation> {
+        const title = params.title;
+        const lastUpdate = params.lastUpdate;
+
+        const conversation = await prisma.conversation.update(
+            {
+                where: {
+                    id: params.id
+                },
+                data: {
+                    title,
+                    lastUpdate
+                }
+            }
+        );
 
         return conversation;
     }

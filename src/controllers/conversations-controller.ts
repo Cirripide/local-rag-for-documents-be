@@ -20,9 +20,30 @@ export const createConversation = async (req: Request, res: Response): Promise<v
     }
 };
 
-/*export const updateConversation = async (req: Request, res: Response): Promise<void> => {
+export const updateConversation = async (req: Request, res: Response): Promise<void> => {
+    if (!req.validatedUpdateConversationParams) {
+        throw new Error("updateConversation was used without first using the validator");
+    }
 
-};*/
+    try {
+        const id = req.validatedUpdateConversationParams.id;
+        const title = req.validatedUpdateConversationParams.title;
+        const lastUpdate = req.validatedUpdateConversationParams.lastUpdate;
+        const conversationDao = new ConversationDao();
+        const conversation = await conversationDao.updateConversation({
+            id,
+            title,
+            lastUpdate
+        });
+        res.json(conversation);
+    } catch (e) {
+        if (e instanceof Error) {
+            res.status(500).send(e.message);
+        } else {
+            res.status(500).send("Unknown error");
+        }
+    }
+};
 
 export const getAllConversations = async (req: Request, res: Response): Promise<void> => {
     if (!req.validatedGetConversationsParams) {

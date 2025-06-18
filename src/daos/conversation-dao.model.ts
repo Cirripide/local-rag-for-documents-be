@@ -28,3 +28,5 @@ export type GetConversationsParams = {
 }
 
 export type CreateConversationParams = Omit<Conversation, "id" | "createdAt" | "lastUpdate">;
+
+export type UpdateConversationParams = Required<Pick<Conversation, "id">> & Partial<Pick<Conversation, "title" | "lastUpdate">>;

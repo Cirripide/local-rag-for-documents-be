@@ -1,8 +1,8 @@
 import express from "express";
-import {createConversation, getAllConversations} from "../../controllers/conversations-controller";
+import {createConversation, getAllConversations, updateConversation} from "../../controllers/conversations-controller";
 import {
     validateConversationRequiredFields,
-    validateGetAllConversationsFields
+    validateGetAllConversationsFields, validateUpdateConversationFields
 } from "../../middlewares/validation/validate-conversation";
 
 const router = express.Router();
@@ -78,6 +78,6 @@ router.get('/', validateGetAllConversationsFields, getAllConversations);
  */
 router.post('/', validateConversationRequiredFields, createConversation);
 
-//router.patch('/');
+router.patch('/:id', validateUpdateConversationFields, updateConversation);
 
 export default router;
