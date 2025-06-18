@@ -5,8 +5,9 @@ import {
     isCreateConversationQueryParamsOrderBy, isCreateConversationQueryParamsSort
 } from "../../daos/conversation-dao.model";
 
-export const validateConversationRequiredFields = (req: Request, res: Response, next: NextFunction) => {
+export const validateConversationRequiredFields = (req: Request<{}, {}, {[key: string]: unknown}>, res: Response, next: NextFunction) => {
     const errorParams: ErrorParam[] = [];
+    let title: string | undefined;
 
     if (typeof req.body?.title !== "string") {
         errorParams.push({
@@ -15,6 +16,8 @@ export const validateConversationRequiredFields = (req: Request, res: Response, 
             unrecognizedValue: req.body?.title,
             allowedValues: "string type"
         });
+    } else {
+        title = req.body.title;
     }
 
     if (errorParams.length) {
@@ -22,7 +25,12 @@ export const validateConversationRequiredFields = (req: Request, res: Response, 
         return;
     }
 
-    req["validatedCreateConversationParams"] = {title: req.body.title};
+    if (!title) {
+        res.status(500).send("Unknown error");
+        return;
+    }
+
+    req["validatedCreateConversationParams"] = {title};
 
     next();
 };
