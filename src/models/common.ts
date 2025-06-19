@@ -16,3 +16,11 @@ export function isISO8601(val: unknown): val is ISO8601String {
 
     return true
 }
+ // String digits check
+export function checkDigits(str: unknown): boolean {
+    if (typeof str !== "string") {
+        return false;
+    }
+
+    return /^\d+$/.test(str);
+}

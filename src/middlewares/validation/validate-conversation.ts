@@ -7,7 +7,7 @@ import {
     isCreateConversationQueryParamsOrderBy,
     isCreateConversationQueryParamsSort, UpdateConversationParams
 } from "../../daos/conversation-dao.model";
-import {isISO8601} from "../../models/common";
+import {checkDigits, isISO8601} from "../../models/common";
 
 export const validateConversationRequiredFields = (req: Request<{}, {}, {[key: string]: unknown}>, res: Response, next: NextFunction) => {
     const errorParams: ErrorParam[] = [];
@@ -81,7 +81,7 @@ export const validateUpdateConversationFields = (req: Request<{id: string}, {}, 
     const optionalValidatedParams: Partial<UpdateConversationParams> = {};
     let id: number | undefined;
 
-    if (!req.params.id) {
+    if (!req.params.id || !checkDigits(!req.params.id)) {
         errorParams.push({
             name: "id",
             description: "Invalid query param",
