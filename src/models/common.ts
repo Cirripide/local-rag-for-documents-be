@@ -18,8 +18,6 @@ export function isISO8601(val: unknown): val is ISO8601String {
 }
  // String digits check
 export function checkDigits(str: unknown): boolean {
-    console.log(str)
-    console.log(typeof str)
 
     if (typeof str !== "string") {
         return false;

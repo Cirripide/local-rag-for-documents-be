@@ -6,6 +6,8 @@ import {
     CreateConversationQueryParamsSort,
     CreateConversationParams, UpdateConversationParams
 } from "./conversation-dao.model";
+import {Prisma} from "../prisma/generated";
+
 
 export class ConversationDao {
 
@@ -39,22 +41,31 @@ export class ConversationDao {
     }
 
     async updateConversation(params: UpdateConversationParams): Promise<Conversation> {
-        const title = params.title;
-        const lastUpdate = params.lastUpdate;
+        try {
+            const title = params.title;
+            const lastUpdate = params.lastUpdate;
 
-        const conversation = await prisma.conversation.update(
-            {
-                where: {
-                    id: params.id
-                },
-                data: {
-                    title,
-                    lastUpdate
+            const conversation = await prisma.conversation.update(
+                {
+                    where: {
+                        id: params.id
+                    },
+                    data: {
+                        title,
+                        lastUpdate
+                    }
                 }
-            }
-        );
+            );
 
-        return conversation;
+            return conversation;
+        } catch(err) {
+
+            if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+                throw new Error(`Conversation with id=${params.id} not found`);
+            }
+            throw new Error("Unknown Error");
+        }
+
     }
 
 }
