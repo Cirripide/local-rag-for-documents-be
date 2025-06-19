@@ -81,7 +81,7 @@ export const validateUpdateConversationFields = (req: Request<{id: string}, {}, 
     const optionalValidatedParams: Partial<UpdateConversationParams> = {};
     let id: number | undefined;
 
-    if (!req.params.id || !checkDigits(!req.params.id)) {
+    if (!req.params.id || !checkDigits(req.params.id)) {
         errorParams.push({
             name: "id",
             description: "Invalid query param",
