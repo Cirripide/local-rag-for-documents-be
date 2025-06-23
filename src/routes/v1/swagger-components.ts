@@ -15,7 +15,7 @@
  *                     example: 1
  *                 title:
  *                     type: string
- *                     example: "Progetto Alpha"
+ *                     example: "Alpha conversation"
  *                 createdAt:
  *                     type: string
  *                     format: date-time
@@ -55,7 +55,7 @@
  *                 name:
  *                     type: string
  *                     description: The name of the invalid parameter
- *                     example: order_by
+ *                     example: invalidParameterName
  *                 description:
  *                     type: string
  *                     description: Description of the problem
