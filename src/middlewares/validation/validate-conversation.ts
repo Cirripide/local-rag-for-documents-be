@@ -127,3 +127,34 @@ export const validateUpdateConversationFields = (req: Request<{id: string}, {}, 
     req["validatedUpdateConversationParams"] = {id, ...optionalValidatedParams};
     next();
 };
+
+export const validateDeleteConversationFields = (req: Request<{id: string}, {}, {}>, res: Response, next: NextFunction) => {
+
+    const errorParams: ErrorParam[] = [];
+    let id: number | undefined;
+
+    if (!req.params.id || !checkDigits(req.params.id)) {
+        errorParams.push({
+            name: "id",
+            description: "Invalid query param",
+            unrecognizedValue: req.params.id,
+            allowedValues: "Number"
+        });
+    } else {
+        id  = +req.params.id;
+    }
+
+    if (errorParams.length) {
+        invalidParamsErrorResponse(res, errorParams);
+        return;
+    }
+
+    if (!id) {
+        res.status(500).send("Unknown error");
+        return;
+    }
+
+    req["validatedDeleteConversationParams"] = {id};
+    next();
+};
+

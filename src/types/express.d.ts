@@ -1,6 +1,6 @@
 import {
     GetConversationsParams,
-    CreateConversationParams, UpdateConversationParams,
+    CreateConversationParams, UpdateConversationParams, DeleteConversationParams,
 } from "../daos/conversation-dao.model";
 
 
@@ -9,5 +9,6 @@ declare module 'express-serve-static-core' {
         validatedGetConversationsParams?: GetConversationsParams,
         validatedCreateConversationParams?: CreateConversationParams
         validatedUpdateConversationParams?: UpdateConversationParams
+        validatedDeleteConversationParams?: DeleteConversationParams
     }
 }

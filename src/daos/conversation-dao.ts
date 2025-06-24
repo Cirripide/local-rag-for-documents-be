@@ -4,7 +4,7 @@ import {
     GetConversationsParams,
     CreateConversationQueryParamsOrderBy,
     CreateConversationQueryParamsSort,
-    CreateConversationParams, UpdateConversationParams
+    CreateConversationParams, UpdateConversationParams, DeleteConversationParams
 } from "./conversation-dao.model";
 import {Prisma} from "../prisma/generated";
 
@@ -58,7 +58,30 @@ export class ConversationDao {
             );
 
             return conversation;
-        } catch(err) {
+        } catch (err) {
+
+            if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+                throw new Error(`Conversation with id=${params.id} not found`);
+            }
+            throw new Error("Unknown Error");
+        }
+
+    }
+
+    async deleteConversation(params: DeleteConversationParams): Promise<Conversation> {
+        try {
+            const id = params.id;
+
+            const conversation = await prisma.conversation.delete(
+                {
+                    where: {
+                        id
+                    }
+                }
+            );
+
+            return conversation;
+        } catch (err) {
 
             if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
                 throw new Error(`Conversation with id=${params.id} not found`);

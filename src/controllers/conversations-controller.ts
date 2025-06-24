@@ -45,6 +45,28 @@ export const updateConversation = async (req: Request, res: Response): Promise<v
     }
 };
 
+export const deleteConversation = async (req: Request, res: Response): Promise<void> => {
+    if (!req.validatedDeleteConversationParams) {
+        throw new Error("deleteConversation was used without first using the validator");
+    }
+
+    try {
+        const id = req.validatedDeleteConversationParams.id;
+
+        const conversationDao = new ConversationDao();
+        const conversation = await conversationDao.deleteConversation({
+            id
+        });
+        res.json(conversation);
+    } catch (e) {
+        if (e instanceof Error) {
+            res.status(500).send(e.message);
+        } else {
+            res.status(500).send("Unknown error");
+        }
+    }
+};
+
 export const getAllConversations = async (req: Request, res: Response): Promise<void> => {
     if (!req.validatedGetConversationsParams) {
         throw new Error("getAllConversations was used without first using the validator");

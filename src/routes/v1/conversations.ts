@@ -1,7 +1,12 @@
 import express from "express";
-import {createConversation, getAllConversations, updateConversation} from "../../controllers/conversations-controller";
 import {
-    validateConversationRequiredFields,
+    createConversation,
+    deleteConversation,
+    getAllConversations,
+    updateConversation
+} from "../../controllers/conversations-controller";
+import {
+    validateConversationRequiredFields, validateDeleteConversationFields,
     validateGetAllConversationsFields, validateUpdateConversationFields
 } from "../../middlewares/validation/validate-conversation";
 
@@ -121,5 +126,35 @@ router.post('/', validateConversationRequiredFields, createConversation);
  *                 description: Server Error
  */
 router.patch('/:id', validateUpdateConversationFields, updateConversation);
+
+/**
+ * @openapi
+ * /api/v1/conversations/{id}:
+ *     delete:
+ *         summary: Delete a conversation
+ *         parameters:
+ *             - in: path
+ *               name: id
+ *               required: true
+ *               schema:
+ *                   type: integer
+ *               description: ID of the conversation to delete
+ *         responses:
+ *             200:
+ *                 description: Conversation deleted successfully
+ *                 content:
+ *                     application/json:
+ *                         schema:
+ *                             $ref: '#/components/schemas/Conversation'
+ *             400:
+ *                 description: Bad Request – invalid query parameters
+ *                 content:
+ *                     application/json:
+ *                         schema:
+ *                             $ref: '#/components/schemas/InvalidParams'
+ *             500:
+ *                 description: Server Error
+ */
+router.delete('/:id', validateDeleteConversationFields, deleteConversation);
 
 export default router;
