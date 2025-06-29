@@ -8,6 +8,16 @@ export class MessageDao {
     }
 
     async createMessage(params: CreateMessageParams): Promise<Message> {
+        const conversations = await prisma.conversation.findMany({
+           where: {
+               id: params.conversationId
+           }
+        });
+
+        if (!conversations.length) {
+            throw new Error("Conversation not found");
+        }
+
         const message = await prisma.message.create({
             data: {
                 from: params.from,
