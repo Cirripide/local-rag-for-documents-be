@@ -1,5 +1,5 @@
 import prisma from '../services/prisma/prisma-client';
-import {CreateMessageParams} from "./message-dao.model";
+import {CreateMessageParams, GetMessagesParams, MessagesQueryParamsSort} from "./message-dao.model";
 import {Message} from "../models/message.model";
 
 export class MessageDao {
@@ -17,5 +17,23 @@ export class MessageDao {
         });
 
         return message;
+    }
+
+    async getMessages(params: GetMessagesParams): Promise<Message[]> {
+        const sort: MessagesQueryParamsSort = params.sort || "desc";
+        const conversationId: number = params.conversationId;
+
+        const orderBy = {
+            createdAt: sort
+        }
+
+        const messages = await prisma.message.findMany({
+            where: {
+              conversationId
+            },
+            orderBy
+        });
+
+        return messages;
     }
 }

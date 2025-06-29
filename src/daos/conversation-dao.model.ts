@@ -1,30 +1,30 @@
 import {Conversation} from "../models/conversation.model";
 
-export const CreateConversationQueryParamsOrderByValues = ["createdAt", "lastUpdate"] as const;
-export const CreateConversationQueryParamsSortValues = ["asc", "desc"] as const;
+export const ConversationsQueryParamsOrderByValues = ["createdAt", "lastUpdate"] as const;
+export const ConversationsQueryParamsSortValues = ["asc", "desc"] as const;
 
-export type CreateConversationQueryParamsOrderBy = typeof CreateConversationQueryParamsOrderByValues[number];
-export type CreateConversationQueryParamsSort = typeof CreateConversationQueryParamsSortValues[number];
+export type ConversationsQueryParamsOrderBy = typeof ConversationsQueryParamsOrderByValues[number];
+export type ConversationsQueryParamsSort = typeof ConversationsQueryParamsSortValues[number];
 
-// type-guard CreateConversationQueryParamsOrderBy
-export function isCreateConversationQueryParamsOrderBy(value: any): value is CreateConversationQueryParamsOrderBy {
+// type-guard ConversationsQueryParamsOrderBy
+export function isConversationsQueryParamsOrderBy(value: any): value is ConversationsQueryParamsOrderBy {
     if (typeof value !== "string") {
         return false;
     }
-    return (CreateConversationQueryParamsOrderByValues as readonly string[]).includes(value);
+    return (ConversationsQueryParamsOrderByValues as readonly string[]).includes(value);
 }
 
-// type-guard CreateConversationQueryParamsSort
-export function isCreateConversationQueryParamsSort(value: any): value is CreateConversationQueryParamsSort {
+// type-guard ConversationsQueryParamsSort
+export function isConversationsQueryParamsSort(value: any): value is ConversationsQueryParamsSort {
     if (typeof value !== "string") {
         return false;
     }
-    return (CreateConversationQueryParamsSortValues as readonly string[]).includes(value);
+    return (ConversationsQueryParamsSortValues as readonly string[]).includes(value);
 }
 
 export type GetConversationsParams = {
-    orderBy?: CreateConversationQueryParamsOrderBy;
-    sort?: CreateConversationQueryParamsSort;
+    orderBy?: ConversationsQueryParamsOrderBy;
+    sort?: ConversationsQueryParamsSort;
 }
 
 export type CreateConversationParams = Omit<Conversation, "id" | "createdAt" | "lastUpdate">;

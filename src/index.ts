@@ -19,14 +19,15 @@ app.use('/api/v1', v1Router);
 app.post('/test/:convId', async (req, res) => {
 
     try {
-        const conversationId = req.query?.id ? +req.query.id : 1;
+        const conversationId = req.params?.convId ? +req.params.convId : 1;
         const messageDao = new MessageDao();
         const answer = req.body.answer;
-        await messageDao.createMessage({
+        const humanMessage = await messageDao.createMessage({
             from: "Human",
             message: answer,
             conversationId: conversationId
         });
+
         const ragRes = await ragService.answer(answer);
         await messageDao.createMessage({
             from: "Ai",

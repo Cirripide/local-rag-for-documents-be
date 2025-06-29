@@ -1,13 +1,18 @@
 import {NextFunction, Request, Response} from 'express';
 import {ErrorParam, invalidParamsErrorResponse} from "../../services/errors/response-error-handlers";
 import {
-    CreateConversationQueryParamsOrderByValues,
-    CreateConversationQueryParamsSortValues,
+    ConversationsQueryParamsOrderByValues,
+    ConversationsQueryParamsSortValues,
     GetConversationsParams,
-    isCreateConversationQueryParamsOrderBy,
-    isCreateConversationQueryParamsSort, UpdateConversationParams
+    isConversationsQueryParamsOrderBy,
+    isConversationsQueryParamsSort, UpdateConversationParams
 } from "../../daos/conversation-dao.model";
 import {checkDigits, isISO8601} from "../../models/common";
+import {
+    GetMessagesParams,
+    isMessagesQueryParamsSort,
+    MessagesQueryParamsSortValues
+} from "../../daos/message-dao.model";
 
 export const validateConversationRequiredFields = (req: Request<{}, {}, {[key: string]: unknown}>, res: Response, next: NextFunction) => {
     const errorParams: ErrorParam[] = [];
@@ -44,23 +49,23 @@ export const validateGetAllConversationsFields = (req: Request<{}, {}, {[key: st
     const errorParams: ErrorParam[] = [];
     const validatedParams: GetConversationsParams = {};
 
-    if (req.query?.order_by !== undefined && !isCreateConversationQueryParamsOrderBy(req.query?.order_by)) {
+    if (req.query?.order_by !== undefined && !isConversationsQueryParamsOrderBy(req.query?.order_by)) {
         errorParams.push({
             name: "order_by",
             description: "Invalid query value format",
             unrecognizedValue: req.query?.order_by,
-            allowedValues: CreateConversationQueryParamsOrderByValues
+            allowedValues: ConversationsQueryParamsOrderByValues
         });
     } else {
         validatedParams["orderBy"] = req.query?.order_by;
     }
 
-    if (req.query?.sort !== undefined && !isCreateConversationQueryParamsSort(req.query?.sort)) {
+    if (req.query?.sort !== undefined && !isConversationsQueryParamsSort(req.query?.sort)) {
         errorParams.push({
             name: "sort",
             description: "Invalid query value format",
             unrecognizedValue: req.query?.sort,
-            allowedValues: CreateConversationQueryParamsSortValues
+            allowedValues: ConversationsQueryParamsSortValues
         });
     } else {
         validatedParams["sort"] = req.query?.sort
@@ -157,4 +162,45 @@ export const validateDeleteConversationFields = (req: Request<{id: string}, {}, 
     req["validatedDeleteConversationParams"] = {id};
     next();
 };
+
+export const validateGetConversationMessages = (req: Request<{id: string}, {}, {[key: string]: unknown}>, res: Response, next: NextFunction) => {
+    const errorParams: ErrorParam[] = [];
+    let conversationId: number | undefined;
+    const validatedParams: Omit<GetMessagesParams, "conversationId"> = {};
+
+    if (!req.params.id || !checkDigits(req.params.id)) {
+        errorParams.push({
+            name: "id",
+            description: "Invalid query param",
+            unrecognizedValue: req.params.id,
+            allowedValues: "Number"
+        });
+    } else {
+        conversationId  = +req.params.id;
+    }
+
+    if (req.query?.sort !== undefined && !isMessagesQueryParamsSort(req.query?.sort)) {
+        errorParams.push({
+            name: "sort",
+            description: "Invalid query value format",
+            unrecognizedValue: req.query?.sort,
+            allowedValues: MessagesQueryParamsSortValues
+        });
+    } else {
+        validatedParams["sort"] = req.query?.sort
+    }
+
+    if (errorParams.length) {
+        invalidParamsErrorResponse(res, errorParams);
+        return;
+    }
+
+    if (!conversationId) {
+        res.status(500).send("Unknown error");
+        return;
+    }
+
+    req["validateGetConversationMessages"] = {conversationId, ...validatedParams};
+    next();
+}
 

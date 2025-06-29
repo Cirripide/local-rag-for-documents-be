@@ -2,8 +2,8 @@ import prisma from '../services/prisma/prisma-client';
 import {Conversation} from "../models/conversation.model";
 import {
     GetConversationsParams,
-    CreateConversationQueryParamsOrderBy,
-    CreateConversationQueryParamsSort,
+    ConversationsQueryParamsOrderBy,
+    ConversationsQueryParamsSort,
     CreateConversationParams, UpdateConversationParams, DeleteConversationParams
 } from "./conversation-dao.model";
 import {Prisma} from "../prisma/generated";
@@ -15,8 +15,8 @@ export class ConversationDao {
     }
 
     async getAllConversations(params?: GetConversationsParams): Promise<Conversation[]> {
-        const orderByKey: CreateConversationQueryParamsOrderBy = params?.orderBy || "lastUpdate";
-        const sort: CreateConversationQueryParamsSort = params?.sort || "desc";
+        const orderByKey: ConversationsQueryParamsOrderBy = params?.orderBy || "lastUpdate";
+        const sort: ConversationsQueryParamsSort = params?.sort || "desc";
 
         const orderBy = {
             [orderByKey]: sort

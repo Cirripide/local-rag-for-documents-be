@@ -2,12 +2,12 @@ import express from "express";
 import {
     createConversation,
     deleteConversation,
-    getAllConversations,
+    getAllConversations, getConversationMessages,
     updateConversation
 } from "../../controllers/conversations-controller";
 import {
     validateConversationRequiredFields, validateDeleteConversationFields,
-    validateGetAllConversationsFields, validateUpdateConversationFields
+    validateGetAllConversationsFields, validateGetConversationMessages, validateUpdateConversationFields
 } from "../../middlewares/validation/validate-conversation";
 
 const router = express.Router();
@@ -156,5 +156,44 @@ router.patch('/:id', validateUpdateConversationFields, updateConversation);
  *                 description: Server Error
  */
 router.delete('/:id', validateDeleteConversationFields, deleteConversation);
+
+/**
+ * @openapi
+ * /api/v1/conversations/{id}/messages:
+ *     get:
+ *         summary: Get all messages for a specific conversation
+ *         parameters:
+ *             - in: path
+ *               name: id
+ *               required: true
+ *               schema:
+ *                   type: integer
+ *               description: ID of the conversation
+ *             - in: query
+ *               name: sort
+ *               required: false
+ *               schema:
+ *                   type: string
+ *                   enum:
+ *                     - asc
+ *                     - desc
+ *               description: Sort direction for the messages (ascending or descending)
+ *         responses:
+ *             200:
+ *                 description: OK
+ *                 content:
+ *                     application/json:
+ *                         schema:
+ *                             $ref: '#/components/schemas/GetConversationMessagesResponse'
+ *             400:
+ *                 description: Bad Request – invalid query parameters
+ *                 content:
+ *                     application/json:
+ *                         schema:
+ *                             $ref: '#/components/schemas/InvalidParams'
+ *             500:
+ *                 description: Server Error
+ */
+router.get('/:id/messages', validateGetConversationMessages, getConversationMessages);
 
 export default router;

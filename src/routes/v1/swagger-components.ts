@@ -44,6 +44,41 @@
  *                     type: string
  *                     example: "New conversation"
  *
+ *         Message:
+ *             type: object
+ *             required:
+ *                 - id
+ *                 - from
+ *                 - message
+ *                 - conversationId
+ *                 - createdAt
+ *             properties:
+ *                 id:
+ *                     type: integer
+ *                     example: 42
+ *                 from:
+ *                     $ref: '#/components/schemas/MessageFrom'
+ *                 message:
+ *                     type: string
+ *                     example: "Hello, how are you?"
+ *                 conversationId:
+ *                     type: integer
+ *                     example: 1
+ *                 createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                     example: "2024-06-10T15:45:00Z"
+ *
+ *         GetConversationMessagesResponse:
+ *             type: object
+ *             required:
+ *                 - hits
+ *             properties:
+ *                 hits:
+ *                     type: array
+ *                     items:
+ *                         $ref: '#/components/schemas/Message'
+ *
  *         ErrorParam:
  *             type: object
  *             required:
