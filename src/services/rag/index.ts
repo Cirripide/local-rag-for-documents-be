@@ -6,6 +6,7 @@ import {createRetriever} from "../retriever/retriever";
 import {AIMessage, BaseMessage, HumanMessage} from "@langchain/core/messages";
 import {RunnableSequence} from "@langchain/core/runnables";
 import {formatDocumentsAsString} from "langchain/util/document";
+import {Message} from "../../models/message.model";
 
 dotenv.config();
 
@@ -35,8 +36,6 @@ export default class RagService {
     private readonly llm: Ollama;
 
     private readonly outputParser: StringOutputParser;
-
-    chatHistory: BaseMessage[] = [];
 
     constructor() {
 
@@ -74,14 +73,27 @@ export default class RagService {
         return contextualizedQuestion;
     }
 
-    async answer(question: string) {
+    async answer(question: string, rawMessageHistory: Message[]) {
+        const chatHistory: BaseMessage[] = rawMessageHistory.map((m: Message) => {
+            let formattedMessage: BaseMessage;
+            switch (m.from) {
+                case "Ai":
+                    formattedMessage = new AIMessage(m.message);
+                    break;
+                case "Human":
+                    formattedMessage = new HumanMessage(m.message);
+                    break;
+                default:
+                    return undefined;
+            }
+            return formattedMessage;
+        }).filter(m => m !== undefined);
+
         let contextualizedQuestion;
 
-        if (this.chatHistory.length > 0) {
-            contextualizedQuestion = await this.generateContextualizedQuestion(question, this.chatHistory);
+        if (chatHistory.length > 0) {
+            contextualizedQuestion = await this.generateContextualizedQuestion(question, chatHistory);
         }
-
-        this.chatHistory.push(new HumanMessage(question))
 
         const prompt = ChatPromptTemplate.fromMessages([
             ["system", this.systemPrompt],
@@ -107,8 +119,6 @@ export default class RagService {
         ]);
 
         const answer = await generationChain.invoke({question: contextualizedQuestion || question});
-
-        this.chatHistory.push(new AIMessage(answer))
 
         return answer;
     }

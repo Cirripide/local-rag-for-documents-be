@@ -2,6 +2,8 @@ import {Request} from "express";
 import type { WebSocket } from 'ws';
 import {MessageDao} from "../daos/message-dao";
 import RagService from "../services/rag";
+import {Message} from "../models/message.model";
+import {AIMessage, BaseMessage, HumanMessage} from "@langchain/core/messages";
 
 export const chatWithAi = async (ws: WebSocket, req: Request) => {
 
@@ -13,13 +15,15 @@ export const chatWithAi = async (ws: WebSocket, req: Request) => {
 
             const messageDao = new MessageDao();
 
+            const rawMessageHistory: Message[] = await messageDao.getMessages({conversationId, sort: 'asc'});
+
             await messageDao.createMessage({
                 from: "Human",
                 message: answer,
                 conversationId
             });
 
-            const ragRes = await ragService.answer(answer);
+            const ragRes = await ragService.answer(answer, rawMessageHistory);
 
             await messageDao.createMessage({
                 from: "Ai",
