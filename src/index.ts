@@ -6,12 +6,14 @@ import expressWs from 'express-ws';
 import v1Router from "./routes/v1"
 import {chatWithAi} from "./controllers/chat-controller";
 
+
 dotenv.config();
 
 const { app } = expressWs(express());
 app.use(express.json());
 
 app.use('/api/v1', v1Router);
+
 app.ws("/api/v1/chat/:conversationId",chatWithAi);
 
 // Swagger configuration
@@ -23,6 +25,12 @@ const swaggerOptions = {
             version: '1.0.0',
             description: 'BE API Call Documentation',
         },
+        servers: [
+            {
+                url: 'http://localhost.com',
+                description: 'HTTP REST server',
+            }
+        ]
     },
     apis: ['./src/routes/v1/*.ts'],
 };

@@ -3,7 +3,6 @@ import type { WebSocket } from 'ws';
 import {MessageDao} from "../daos/message-dao";
 import RagService from "../services/rag";
 import {Message} from "../models/message.model";
-import {AIMessage, BaseMessage, HumanMessage} from "@langchain/core/messages";
 
 export const chatWithAi = async (ws: WebSocket, req: Request) => {
 
