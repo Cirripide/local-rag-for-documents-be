@@ -28,7 +28,7 @@
     "dev:prisma-migrate": "docker compose exec rag npx prisma migrate dev --name init",
     "dev:prisma-generate": "npx prisma generate",
     "dev:logs": "docker compose logs -f",
-    "generate:ws-doc": "asyncapi generate fromTemplate ./src/routes/v1/asyncapi.yaml @asyncapi/html-template -o ./src/ws-docs"
+    "generate:ws-doc": "asyncapi generate fromTemplate ./src/routes/v1/asyncapi.yaml @asyncapi/html-template -o ./src/ws-docs --use-new-generator"
   },
   "devDependencies": {
     "@asyncapi/cli": "^3.0.0",
