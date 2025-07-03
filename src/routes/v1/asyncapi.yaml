@@ -32,10 +32,6 @@ operations:
 channels:
   api-v1-chat-conversationId:
     address: '/api/v1/chat/{conversationId}'
-    parameters:
-      conversationId:
-        description: The unique ID of the conversation.
-        location: '$message.payload#/conversationId'
     messages:
       textMessage:
         name: textMessage
@@ -43,17 +39,8 @@ channels:
         summary: A simple message containing a text string.
         contentType: 'text/plain'
         payload:
-          type: object
-          properties:
-            conversationId:
-              type: string
-              description: The unique ID of the conversation.
-            message:
-              type: string
-              description: The textual content of the message.
-              examples:
-                - 'Hi, how are you?'
-                - 'What is the capital of France?'
-          required:
-            - conversationId
-            - message
+          type: string
+          description: The textual content of the message.
+          examples:
+            - 'Hi, how are you?'
+            - 'What is the capital of France?'
