@@ -41,6 +41,6 @@ const swaggerSpec = swaggerJSDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Async API UI
-app.use('/ws-docs', express.static('src/ws-docs'));
+app.use('/ws-docs', express.static('src/ws-docs/'));
 
 app.listen(process.env["EXPRESS_PORT"]);
