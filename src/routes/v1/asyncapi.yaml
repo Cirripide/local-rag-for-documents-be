@@ -1,4 +1,4 @@
-asyncapi: '2.6.0'
+asyncapi: '3.0.0'
 info:
   title: Chat with AI Service
   version: '1.0.0'
@@ -12,27 +12,44 @@ servers:
     protocol: ws
     description: Local development server
 
+operations:
+  sendMessageToAI:
+    action: send
+    channel:
+      $ref: '#/channels/api-v1-chat-conversationId'
+    summary: The client sends a text message to the AI.
+    messages:
+      - $ref: '#/components/messages/textMessage'
+
+  receiveMessageFromAI:
+    action: receive
+    channel:
+      $ref: '#/channels/api-v1-chat-conversationId'
+    summary: The server (AI) responds with a text message.
+    messages:
+      - $ref: '#/components/messages/textMessage'
+
 channels:
-  '/api/v1/chat/{conversationId}':
+  api-v1-chat-conversationId:
+    address: '/api/v1/chat/{conversationId}'
     parameters:
       conversationId:
         description: The unique ID of the conversation.
         schema:
           type: string
-
-    publish:
-      summary: The client sends a text message to the AI.
-      operationId: sendMessageToAI
-      message:
-        $ref: '#/components/messages/textMessage'
-
-    subscribe:
-      summary: The server (AI) responds with a text message.
-      operationId: receiveMessageFromAI
-      message:
+    messages:
+      textMessage:
         $ref: '#/components/messages/textMessage'
 
 components:
+  schemas:
+    textMessage:
+      type: string
+      description: The textual content of the message.
+      examples:
+        - 'Hi, how are you?'
+        - 'What is the capital of France?'
+
   messages:
     textMessage:
       name: textMessage
@@ -40,8 +57,4 @@ components:
       summary: A simple message containing a text string.
       contentType: 'text/plain'
       payload:
-        type: string
-        description: The textual content of the message.
-        examples:
-          - 'Hi, how are you?'
-          - 'What is the capital of France?'
+        $ref: '#/components/schemas/textMessage'
