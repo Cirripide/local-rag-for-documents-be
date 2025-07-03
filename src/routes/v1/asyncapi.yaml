@@ -8,7 +8,7 @@ info:
 
 servers:
   development:
-    url: 'ws://localhost'
+    host: 'localhost'
     protocol: ws
     description: Local development server
 
@@ -19,7 +19,7 @@ operations:
       $ref: '#/channels/api-v1-chat-conversationId'
     summary: The client sends a text message to the AI.
     messages:
-      - $ref: '#/components/messages/textMessage'
+      - $ref: '#/channels/api-v1-chat-conversationId/messages/textMessage'
 
   receiveMessageFromAI:
     action: receive
@@ -27,7 +27,7 @@ operations:
       $ref: '#/channels/api-v1-chat-conversationId'
     summary: The server (AI) responds with a text message.
     messages:
-      - $ref: '#/components/messages/textMessage'
+      - $ref: '#/channels/api-v1-chat-conversationId/messages/textMessage'
 
 channels:
   api-v1-chat-conversationId:
@@ -35,26 +35,25 @@ channels:
     parameters:
       conversationId:
         description: The unique ID of the conversation.
-        schema:
-          type: string
+        location: '$message.payload#/conversationId'
     messages:
       textMessage:
-        $ref: '#/components/messages/textMessage'
-
-components:
-  schemas:
-    textMessage:
-      type: string
-      description: The textual content of the message.
-      examples:
-        - 'Hi, how are you?'
-        - 'What is the capital of France?'
-
-  messages:
-    textMessage:
-      name: textMessage
-      title: Text Message
-      summary: A simple message containing a text string.
-      contentType: 'text/plain'
-      payload:
-        $ref: '#/components/schemas/textMessage'
+        name: textMessage
+        title: Text Message
+        summary: A simple message containing a text string.
+        contentType: 'text/plain'
+        payload:
+          type: object
+          properties:
+            conversationId:
+              type: string
+              description: The unique ID of the conversation.
+            message:
+              type: string
+              description: The textual content of the message.
+              examples:
+                - 'Hi, how are you?'
+                - 'What is the capital of France?'
+          required:
+            - conversationId
+            - message
