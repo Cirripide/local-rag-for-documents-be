@@ -31,7 +31,8 @@
     "generate:ws-doc": "asyncapi generate fromTemplate ./src/routes/v1/asyncapi.yaml @asyncapi/html-template -o ./src/ws-docs --use-new-generator"
   },
   "devDependencies": {
-    "@asyncapi/cli": "^3.0.0",
+    "@asyncapi/cli": "^3.2.0",
+    "@asyncapi/html-template": "^3.3.0",
     "@types/cli-progress": "^3.11.6",
     "@types/express": "^5.0.3",
     "@types/express-ws": "^3.0.5",
