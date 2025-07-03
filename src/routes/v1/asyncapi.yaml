@@ -1,0 +1,47 @@
+asyncapi: '2.6.0'
+info:
+  title: Chat with AI Service
+  version: '1.0.0'
+  description: >
+    A WebSocket chat service to interact with an artificial intelligence.
+    Communication occurs through the exchange of text messages.
+
+servers:
+  development:
+    url: 'ws://localhost'
+    protocol: ws
+    description: Local development server
+
+channels:
+  '/api/v1/chat/{conversationId}':
+    parameters:
+      conversationId:
+        description: The unique ID of the conversation.
+        schema:
+          type: string
+
+    publish:
+      summary: The client sends a text message to the AI.
+      operationId: sendMessageToAI
+      message:
+        $ref: '#/components/messages/textMessage'
+
+    subscribe:
+      summary: The server (AI) responds with a text message.
+      operationId: receiveMessageFromAI
+      message:
+        $ref: '#/components/messages/textMessage'
+
+components:
+  messages:
+    textMessage:
+      name: textMessage
+      title: Text Message
+      summary: A simple message containing a text string.
+      contentType: 'text/plain'
+      payload:
+        type: string
+        description: The textual content of the message.
+        examples:
+          - 'Hi, how are you?'
+          - 'What is the capital of France?'
