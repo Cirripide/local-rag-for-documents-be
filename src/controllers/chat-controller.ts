@@ -3,6 +3,7 @@ import type { WebSocket } from 'ws';
 import {MessageDao} from "../daos/message-dao";
 import RagService from "../services/rag";
 import {Message} from "../models/message.model";
+import {ConversationDao} from "../daos/conversation-dao";
 
 export const chatWithAi = async (ws: WebSocket, req: Request) => {
 
@@ -13,6 +14,7 @@ export const chatWithAi = async (ws: WebSocket, req: Request) => {
             const answer = msg.toString();
 
             const messageDao = new MessageDao();
+            const conversationDao = new ConversationDao();
 
             const rawMessageHistory: Message[] = await messageDao.getMessages({conversationId, sort: 'asc'});
 
@@ -28,6 +30,11 @@ export const chatWithAi = async (ws: WebSocket, req: Request) => {
                 from: "Ai",
                 message: ragRes,
                 conversationId: conversationId
+            });
+
+            await conversationDao.updateConversation({
+                id: conversationId,
+                lastUpdate: new Date()
             });
 
             ws.send(ragRes);
