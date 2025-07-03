@@ -30,7 +30,7 @@
     "dev:logs": "docker compose logs -f"
   },
   "devDependencies": {
-    "@asyncapi/cli": "^3.2.0",
+    "@asyncapi/cli": "^2.17.0",
     "@types/cli-progress": "^3.11.6",
     "@types/express": "^5.0.3",
     "@types/express-ws": "^3.0.5",
