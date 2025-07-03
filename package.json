@@ -27,7 +27,8 @@
     "dev:run-chroma": "docker run -p 8000:8000 chromadb/chroma",
     "dev:prisma-migrate": "docker compose exec rag npx prisma migrate dev --name init",
     "dev:prisma-generate": "npx prisma generate",
-    "dev:logs": "docker compose logs -f"
+    "dev:logs": "docker compose logs -f",
+    "generate:ws-doc": "asyncapi generate fromTemplate ./src/routes/v1/asyncapi.yaml @asyncapi/html-template -o ./src/ws-docs --use-new-generator"
   },
   "devDependencies": {
     "@asyncapi/cli": "^2.17.0",
