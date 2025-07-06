@@ -57,7 +57,11 @@
  *                     type: integer
  *                     example: 42
  *                 from:
- *                     $ref: '#/components/schemas/MessageFrom'
+ *                     type: string
+ *                     enum:
+ *                         - Human
+ *                         - Ai
+ *                     example: "Human"
  *                 message:
  *                     type: string
  *                     example: "Hello, how are you?"

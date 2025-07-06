@@ -29,6 +29,14 @@ operations:
     messages:
       - $ref: '#/channels/api-v1-chat-conversationId/messages/textMessage'
 
+  receiveIndexingStatus:
+    action: receive
+    channel:
+      $ref: '#/channels/api-v1-indexing'
+    summary: The client receives indexing status updates.
+    messages:
+      - $ref: '#/channels/api-v1-indexing/messages/indexingStatus'
+
 channels:
   api-v1-chat-conversationId:
     address: '/api/v1/chat/{conversationId}'
@@ -44,3 +52,37 @@ channels:
           examples:
             - 'Hi, how are you?'
             - 'What is the capital of France?'
+
+  api-v1-indexing:
+    address: '/api/v1/indexing'
+    messages:
+      indexingStatus:
+        name: indexingStatus
+        title: Indexing Status Update
+        summary: Notification regarding the current indexing stage.
+        contentType: 'application/json'
+        payload:
+          type: object
+          description: The status update of the indexing process.
+          properties:
+            status:
+              type: string
+              enum:
+                - notStarted
+                - crawl
+                - load
+                - chunk
+                - vectorize
+                - complete
+              description: The current stage of the indexing.
+            message:
+              type: string
+              description: A human-readable message providing details about the current status.
+          required:
+            - status
+            - message
+          examples:
+            - status: "crawl"
+              message: "Starting to crawl files..."
+            - status: "complete"
+              message: "Indexing process completed successfully."
