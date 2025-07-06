@@ -28,27 +28,6 @@ services:
             - node_modules/
         - action: rebuild
           path: package.json
-
-  indexer:
-    container_name: indexer
-    restart: always
-    build:
-      context: .
-      dockerfile: rag.Dockerfile
-      target: indexer
-    volumes:
-      - ${FOLDER_PATH:-./documents}:/app/documents:ro
-    depends_on:
-      - chromadb
-    develop:
-      watch:
-        - action: sync
-          path: ./src
-          target: /app/src
-          ignore:
-            - node_modules/
-        - action: rebuild
-          path: package.json
   db:
     image: mysql
     restart: always

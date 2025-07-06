@@ -22,7 +22,6 @@
     "start": "node ./dist/rag.js",
     "indexing": "node ./dist/indexing.js",
     "dev": "tsx ./src/index.ts",
-    "dev:indexing": "tsx ./src/indexing.ts",
     "dev:pull-chroma": "docker pull chromadb/chroma",
     "dev:run-chroma": "docker run -p 8000:8000 chromadb/chroma",
     "dev:prisma-migrate": "docker compose exec rag npx prisma migrate dev --name init",

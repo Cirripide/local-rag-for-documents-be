@@ -12,8 +12,3 @@ COPY . ./
 RUN npx prisma generate
 RUN npm run generate:ws-doc
 CMD npm run dev
-
-
-FROM base as indexer
-RUN npm install -g nodemon
-CMD nodemon --exec 'npm run dev:indexing' --watch documents

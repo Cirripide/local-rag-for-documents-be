@@ -5,6 +5,7 @@ import swaggerJSDoc from 'swagger-jsdoc';
 import expressWs from 'express-ws';
 import v1Router from "./routes/v1"
 import {chatWithAi} from "./controllers/chat-controller";
+import {indexer} from "./services/indexer";
 
 
 dotenv.config();
@@ -44,3 +45,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/ws-docs', express.static('src/ws-docs/'));
 
 app.listen(process.env["EXPRESS_PORT"]);
+
+// first RAG indexing
+await indexer.index();
