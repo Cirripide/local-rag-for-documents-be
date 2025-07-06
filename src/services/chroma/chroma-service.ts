@@ -71,7 +71,7 @@ export default class ChromaService implements VectorDbServiceAdapter {
         await vectorStore.addDocuments(cleanDocs, {ids: batchIds});
     }
 
-    private getVectorStore(embeddingLLM: Embeddings): Chroma {
+    getVectorStore(embeddingLLM: Embeddings): Chroma {
         return new Chroma(embeddingLLM, {
             collectionName: this.collectionName,
             url: this.dbUrl

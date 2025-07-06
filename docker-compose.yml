@@ -3,19 +3,20 @@ services:
     container_name: chromadb
     restart: always
     image: chromadb/chroma:latest
-    ports:
-      - "8000:8000"
     volumes:
       - chromadb_volume:/data
   rag:
     container_name: rag
     restart: always
+    ports:
+      - "${SERVER_PORT}:${EXPRESS_PORT}"
     build:
       context: .
       dockerfile: rag.Dockerfile
       target: base
     volumes:
       - ${FOLDER_PATH:-./documents}:/app/documents:ro
+      - ./prisma:/app/prisma
     depends_on:
       - chromadb
     develop:
@@ -27,27 +28,14 @@ services:
             - node_modules/
         - action: rebuild
           path: package.json
-
-  indexer:
-    container_name: indexer
+  db:
+    image: mysql
     restart: always
-    build:
-      context: .
-      dockerfile: rag.Dockerfile
-      target: indexer
     volumes:
-      - ${FOLDER_PATH:-./documents}:/app/documents:ro
-    depends_on:
-      - chromadb
-    develop:
-      watch:
-        - action: sync
-          path: ./src
-          target: /app/src
-          ignore:
-            - node_modules/
-        - action: rebuild
-          path: package.json
-
+      - mysql_volume:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE_NAME}"
 volumes:
   chromadb_volume:
+  mysql_volume:

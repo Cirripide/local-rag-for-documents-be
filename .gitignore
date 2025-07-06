@@ -46,3 +46,8 @@ testem.log
 Thumbs.db
 /npmrc-local-override/.npmrc
 /chroma-data/
+
+/src/generated/prisma
+/src/prisma/
+/prisma/migrations/
+/src/ws-docs/

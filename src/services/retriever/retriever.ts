@@ -8,7 +8,9 @@ dotenv.config();
 export async function createRetriever(): Promise<VectorStoreRetriever> {
 
     const embeddingLLM = new OllamaEmbeddings({
-        model: process.env['EMBEDDINGS_LLM_MODEL'] || 'nomic-embed-text'
+        model: process.env['EMBEDDINGS_LLM_MODEL'] || 'nomic-embed-text',
+        baseUrl: 'host.docker.internal'
+
     });
 
     const chromaService = new ChromaService();

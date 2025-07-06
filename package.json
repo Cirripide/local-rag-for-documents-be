@@ -21,14 +21,23 @@
     "build": "tsc",
     "start": "node ./dist/rag.js",
     "indexing": "node ./dist/indexing.js",
-    "dev": "tsx ./src/rag.ts",
-    "dev:indexing": "tsx ./src/indexing.ts",
+    "dev": "tsx ./src/index.ts",
     "dev:pull-chroma": "docker pull chromadb/chroma",
-    "dev:run-chroma": "docker run -p 8000:8000 chromadb/chroma"
+    "dev:run-chroma": "docker run -p 8000:8000 chromadb/chroma",
+    "dev:prisma-migrate": "docker compose exec rag npx prisma migrate dev --name init",
+    "dev:prisma-generate": "npx prisma generate",
+    "dev:logs": "docker compose logs -f",
+    "generate:ws-doc": "npx asyncapi generate fromTemplate ./src/routes/v1/docs/asyncapi.yaml @asyncapi/html-template@3.3.0 --use-new-generator -o ./src/ws-docs --force-write --install -p singleFile=false"
   },
   "devDependencies": {
+    "@asyncapi/cli": "^3.2.0",
+    "@asyncapi/html-template": "^3.3.0",
     "@types/cli-progress": "^3.11.6",
+    "@types/express": "^5.0.3",
+    "@types/express-ws": "^3.0.5",
     "@types/node": "^20.12.7",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "tsx": "^4.19.3",
     "typescript": "^5.4.5"
   },
@@ -36,13 +45,19 @@
     "@langchain/community": "^0.3.36",
     "@langchain/core": "^0.3.57",
     "@langchain/ollama": "^0.2.0",
+    "@prisma/client": "^6.9.0",
     "cheerio": "^1.0.0",
     "chromadb": "^2.4.6",
     "chromadb-default-embed": "^2.14.0",
     "cli-progress": "^3.12.0",
     "dotenv": "^16.4.5",
+    "express": "^5.1.0",
+    "express-ws": "^5.0.2",
     "langchain": "^0.3.2",
     "mammoth": "^1.9.0",
-    "pdf-parse": "^1.1.1"
+    "pdf-parse": "^1.1.1",
+    "prisma": "^6.9.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }
