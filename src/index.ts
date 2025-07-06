@@ -6,6 +6,7 @@ import expressWs from 'express-ws';
 import v1Router from "./routes/v1"
 import {chatWithAi} from "./controllers/chat-controller";
 import {indexer} from "./services/indexer";
+import {indexingStatusController} from "./controllers/indexing-controller";
 
 
 dotenv.config();
@@ -15,7 +16,8 @@ app.use(express.json());
 
 app.use('/api/v1', v1Router);
 
-app.ws("/api/v1/chat/:conversationId",chatWithAi);
+app.ws("/api/v1/chat/:conversationId", chatWithAi);
+app.ws("/api/v1/indexing", indexingStatusController);
 
 // Swagger configuration
 const swaggerOptions = {

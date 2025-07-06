@@ -4,11 +4,20 @@ import {MessageDao} from "../daos/message-dao";
 import RagService from "../services/rag";
 import {Message} from "../models/message.model";
 import {ConversationDao} from "../daos/conversation-dao";
+import {indexer} from "../services/indexer";
 
 export const chatWithAi = async (ws: WebSocket, req: Request) => {
 
     ws.on('message', async (msg: any) => {
         try {
+
+            const indexingStatus = indexer.indexingStatus.status;
+
+            if (indexingStatus !== "complete") {
+                ws.send("File indexing has not been completed or is still in progress. I can't process your request.");
+                return;
+            }
+
             const ragService = new RagService();
             const conversationId = +req.params.conversationId;
             const answer = msg.toString();

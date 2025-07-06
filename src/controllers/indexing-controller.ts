@@ -1,5 +1,7 @@
 import {Request, Response} from "express";
 import {indexer} from "../services/indexer";
+import type {WebSocket} from "ws";
+import {WebSocketIndexingAdapter} from "./adapters/indexing";
 
 export const ragIndexingController = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -9,3 +11,17 @@ export const ragIndexingController = async (req: Request, res: Response): Promis
         res.status(500).send("Unknown error");
     }
 };
+
+export const indexingStatusController = async (ws: WebSocket, req: Request) => {
+    try {
+        const webSocketAdapter = new WebSocketIndexingAdapter(ws);
+
+        indexer.registerStatusObserver(webSocketAdapter);
+
+        ws.on('close', () => {
+            indexer.unregisterStatusObserver(webSocketAdapter);
+        });
+    } catch (e) {
+        ws.send("Unknown error");
+    }
+}

@@ -9,24 +9,45 @@ import {PDFLoader} from "@langchain/community/document_loaders/fs/pdf";
 import {DocumentLoader} from "@langchain/core/document_loaders/base";
 import {RecursiveCharacterTextSplitter} from "langchain/text_splitter";
 import {OllamaEmbeddings} from "@langchain/ollama";
-import {VectorDbServiceAdapter} from "./indexer.models";
+import {
+    IndexingStatus,
+    IndexingStatusObserverAdapter,
+    VectorDbServiceAdapter
+} from "./indexer.models";
 
 
 export default class Indexer {
 
     filesExtensions: string[] = ['.docx', '.txt', '.pdf'];
     vectorDbService: VectorDbServiceAdapter;
+    private _indexingStatus: IndexingStatus = {status: "notStarted", message: "Indexing has not started yet."};
+    private _indexingStatusObservers: Set<IndexingStatusObserverAdapter> = new Set();
 
     constructor(vectorDbService: VectorDbServiceAdapter) {
         dotenv.config();
         this.vectorDbService = vectorDbService;
     }
 
+    public get indexingStatus(): IndexingStatus {
+        return this._indexingStatus;
+    }
+
+    public registerStatusObserver(obs: IndexingStatusObserverAdapter) {
+        this._indexingStatusObservers.add(obs);
+        obs.notifyStatus(this._indexingStatus);
+    }
+
+    public unregisterStatusObserver(obs: IndexingStatusObserverAdapter) {
+        this._indexingStatusObservers.delete(obs);
+    }
+
     public async crawlDocsPaths(): Promise<string[]> {
 
         const docs: string[] = [];
 
-        console.log("Crawling Documents...");
+        this._indexingStatus = {status: "crawl", message: "Crawling Documents..."}
+        console.log(this._indexingStatus.message);
+        this.notifyStatus();
 
         const progressBar = new SingleBar({
             format: "Documents Crawled: {value}",
@@ -48,7 +69,9 @@ export default class Indexer {
 
         const progressBar = new SingleBar({});
 
-        console.log(`Starting document download. ${documentsPaths.length} total documents`);
+        this._indexingStatus = {status: "load", message: `Starting document download. ${documentsPaths.length} total documents`}
+        console.log(this._indexingStatus.message);
+        this.notifyStatus();
 
         progressBar.start(documentsPaths.length, 0);
 
@@ -76,7 +99,9 @@ export default class Indexer {
     }
 
     public async chunkDocuments(rawDocuments: Document[]): Promise<Document[]> {
-        console.log('splitting documents...');
+        this._indexingStatus = {status: "chunk", message: "splitting documents..."}
+        console.log(this._indexingStatus.message);
+        this.notifyStatus();
 
         const splitter = new RecursiveCharacterTextSplitter({
             chunkSize: 500,
@@ -103,7 +128,10 @@ export default class Indexer {
 
         await this.vectorDbService.createCollection();
 
-        console.log('Starting Vectorization...');
+        this._indexingStatus = {status: "vectorize", message: "Starting Vectorization..."}
+        console.log(this._indexingStatus.message);
+        this.notifyStatus();
+
         const progressBar = new SingleBar({});
         progressBar.start(chunks.length, 0);
 
@@ -127,6 +155,10 @@ export default class Indexer {
         const chunks = await this.chunkDocuments(docs);
 
         await this.vectorizeChunks(chunks);
+
+        this._indexingStatus = {status: "complete", message: "Indexing completed."}
+        console.log(this._indexingStatus.message);
+        this.notifyStatus();
     }
 
     private async recursiveDocFind(config: {
@@ -174,5 +206,11 @@ export default class Indexer {
         }
 
         return await loader.load();
+    }
+
+    private notifyStatus() {
+        for (const obs of this._indexingStatusObservers) {
+            obs.notifyStatus(this._indexingStatus);
+        }
     }
 }
