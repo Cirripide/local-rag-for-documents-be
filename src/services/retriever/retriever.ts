@@ -15,7 +15,7 @@ export async function createRetriever(): Promise<VectorStoreRetriever> {
 
     const chromaService = new ChromaService();
 
-    const vectorStore = chromaService.getVectorStore(embeddingLLM);
+    const vectorStore = await chromaService.getVectorStore(embeddingLLM);
 
     return vectorStore.asRetriever();
 }

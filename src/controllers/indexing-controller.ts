@@ -5,6 +5,16 @@ import {WebSocketIndexingAdapter} from "./adapters/indexing";
 
 export const ragIndexingController = async (req: Request, res: Response): Promise<void> => {
     try {
+        const indexerStatus = indexer.indexingStatus.status;
+
+        if (indexerStatus !== "complete" && indexerStatus !== "notStarted") {
+            res.status(409).json({
+                error: "OperationInProgress",
+                message: "Cannot execute the command because another operation is already in progress."
+            });
+            return;
+        }
+
         indexer.index();
         res.status(202).json({status: "started"});
     } catch (e) {

@@ -55,7 +55,7 @@ export default class ChromaService implements VectorDbServiceAdapter {
     }
 
     async vectorizeChunks(config: { embeddingLLM: Embeddings, docs: Document[], baseIndexId?: number }) {
-        const vectorStore = this.getVectorStore(config.embeddingLLM);
+        const vectorStore = await this.getVectorStore(config.embeddingLLM);
 
         const cleanDocs = config.docs.map(doc => {
             const {pdf, ...restMetadata} = doc.metadata;
@@ -71,10 +71,14 @@ export default class ChromaService implements VectorDbServiceAdapter {
         await vectorStore.addDocuments(cleanDocs, {ids: batchIds});
     }
 
-    getVectorStore(embeddingLLM: Embeddings): Chroma {
+    async getVectorStore(embeddingLLM: Embeddings): Promise<Chroma> {
+        const sample = await embeddingLLM.embedQuery("___DIM_TEST___");
+        const inferredDims = sample.length;
+
         return new Chroma(embeddingLLM, {
             collectionName: this.collectionName,
-            url: this.dbUrl
+            url: this.dbUrl,
+            numDimensions: inferredDims
         });
     }
 
