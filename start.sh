@@ -42,12 +42,16 @@ then
   exit 1
 fi
 
+echo "Pulling llm model..."
+# Install llm model
+ollama pull "${LLM_MODEL}"
+
+echo "Pulling embeddings llm model..."
+# Install embeddings llm model
+ollama pull "${EMBEDDINGS_LLM_MODEL}"
 
 # Replace 'FROM model' from Modelfle, create Ollama model
 sed "1 s/BASE_MODEL/${LLM_MODEL}/" Modelfile | ollama create "${LOCAL_LLM_MODEL_NAME}"
-
-# Install embeddings llm model
-ollama pull "${EMBEDDINGS_LLM_MODEL}"
 
 # Start the project
 docker compose watch
