@@ -28,6 +28,31 @@ then
   brew install --quiet docker
 fi
 
+if ! docker info > /dev/null 2>&1; then
+  echo "Docker daemon is not running. Starting it now..."
+
+  OS="$(uname)"
+  if [ "$OS" == "Darwin" ]; then
+    # macOS: launch Docker Desktop
+    open --background -a Docker
+  elif [ "$OS" == "Linux" ]; then
+    # Linux: start the Docker service (requires sudo)
+    sudo systemctl start docker || sudo service docker start
+  else
+    echo "Unrecognized OS ($OS), please start Docker manually."
+    exit 1
+  fi
+
+  # Wait for Docker to become available
+  echo -n "Waiting for Docker"
+  until docker info > /dev/null 2>&1; do
+    echo -n "."
+    sleep 1
+  done
+  echo
+  echo "Docker daemon is now running!"
+fi
+
 # Check if Ollama is installed
 if [ "$has_ollama" == "false" ];
 then
