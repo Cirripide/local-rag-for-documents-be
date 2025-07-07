@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Conversation` ADD COLUMN `lastUpdate` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);

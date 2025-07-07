@@ -10,5 +10,6 @@ COPY --from=dependencies_installer /app/node_modules ./node_modules
 
 COPY . ./
 RUN npx prisma generate
+RUN npx
 RUN npm run generate:ws-doc
 CMD npm run dev
