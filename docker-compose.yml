@@ -29,6 +29,7 @@ services:
             - node_modules/
         - action: rebuild
           path: package.json
+    command: sh -c "npx prisma migrate deploy && npm run dev"
   db:
     image: mysql
     restart: always

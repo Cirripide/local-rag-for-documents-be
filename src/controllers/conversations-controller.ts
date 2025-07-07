@@ -13,8 +13,6 @@ export const createConversation = async (req: Request, res: Response): Promise<v
         const conversation = await conversationDao.createConversation({title});
         res.json(conversation);
     } catch (e) {
-        console.log("Qui erroreeeeee")
-        console.dir(e);
         res.status(500).send("Unknown error");
     }
 };
