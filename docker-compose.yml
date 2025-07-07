@@ -1,4 +1,12 @@
 services:
+  db:
+    image: mysql
+    restart: always
+    volumes:
+      - mysql_volume:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE_NAME}"
   chromadb:
     container_name: chromadb
     restart: always
@@ -28,14 +36,6 @@ services:
             - node_modules/
         - action: rebuild
           path: package.json
-  db:
-    image: mysql
-    restart: always
-    volumes:
-      - mysql_volume:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"
-      MYSQL_DATABASE: "${MYSQL_DATABASE_NAME}"
 volumes:
   chromadb_volume:
   mysql_volume:
