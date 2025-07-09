@@ -104,8 +104,9 @@ export default class Indexer {
         this.notifyStatus();
 
         const splitter = new RecursiveCharacterTextSplitter({
-            chunkSize: 500,
-            chunkOverlap: 100
+            chunkSize: 1000,
+            chunkOverlap: 300,
+            keepSeparator: true
         });
 
         const documentChunks = await splitter.splitDocuments(rawDocuments);

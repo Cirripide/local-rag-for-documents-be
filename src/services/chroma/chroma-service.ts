@@ -15,7 +15,7 @@ export default class ChromaService implements VectorDbServiceAdapter {
     constructor() {
         this.collectionName = process.env["CHROMA_COLLECTION_NAME"] || "chunks";
         this.dbUrl = process.env["CHROMA_URL"] || "http://localhost:8000";
-        this.client = new ChromaClient();
+        this.client = new ChromaClient({ path: this.dbUrl });
 
     }
 
